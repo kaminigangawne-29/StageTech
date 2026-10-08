@@ -1,0 +1,36 @@
+{
+  "name": "stagetech",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:seed": "sucrase-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.2",
+    "bcryptjs": "^2.4.3",
+    "next": "14.1.4",
+    "next-auth": "^4.24.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.73",
+    "@types/react-dom": "^18.2.22",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.1.4",
+    "postcss": "^8.4.38",
+    "prisma": "^5.10.2",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.4.3"
+  }
+}

@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────── Neobrutalism × Theatre design tokens ───────────── */
+:root {
+  --cream: #FFF4D6;
+  --paper: #FFFFFF;
+  --ink: #000000;
+  --curtain: #E63946;   /* velvet-curtain red */
+  --spot: #FFD60A;      /* spotlight yellow */
+  --stage-blue: #3A86FF;
+  --mint: #7AE582;
+  --lilac: #C8B6FF;
+  --pink: #FF8FAB;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--cream);
+  background-image: radial-gradient(#00000014 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
+  color: var(--ink);
+  font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+* { scrollbar-width: auto; scrollbar-color: #000 var(--cream); }
+*::-webkit-scrollbar { width: 12px; }
+*::-webkit-scrollbar-track { background: var(--cream); border-left: 2px solid #000; }
+*::-webkit-scrollbar-thumb { background-color: var(--curtain); border: 2px solid #000; }
+
+::selection { background: var(--spot); color: #000; }
+
+/* ───────────── Neobrutal building blocks ───────────── */
+.nb-card {
+  background: var(--paper);
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0 #000;
+  border-radius: 0;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.nb-card-hover:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 #000; }
+
+.nb-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
+  padding: .7rem 1.4rem; border: 3px solid #000; border-radius: 0;
+  box-shadow: 4px 4px 0 #000; background: var(--spot); color: #000;
+  cursor: pointer; text-decoration: none;
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+.nb-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+.nb-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 #000; }
+.nb-btn:disabled { opacity: .6; cursor: not-allowed; }
+.nb-btn-red { background: var(--curtain); color: #fff; }
+.nb-btn-white { background: #fff; }
+.nb-btn-blue { background: var(--stage-blue); color: #fff; }
+
+.nb-input {
+  width: 100%; background: #fff; color: #000; border: 3px solid #000; border-radius: 0;
+  padding: .65rem .85rem; font-weight: 600; font-size: .95rem; outline: none;
+  box-shadow: 3px 3px 0 #000;
+}
+.nb-input:focus { background: #FFFBE0; box-shadow: 5px 5px 0 var(--curtain); }
+.nb-input::placeholder { color: #777; font-weight: 500; }
+
+.nb-badge {
+  display: inline-flex; align-items: center; gap: .4rem; font-weight: 800; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .04em; padding: .2rem .6rem;
+  border: 2px solid #000; background: var(--spot); color: #000;
+}
+
+.nb-tag {
+  display: inline-block; font-weight: 700; font-size: .75rem; padding: .15rem .55rem;
+  border: 2px solid #000; background: var(--lilac); color: #000;
+}
+
+.nb-label { display: block; font-weight: 800; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .4rem; }
+
+/* ───────────── Theatrical ornaments ───────────── */
+.marquee-lights {
+  height: 14px;
+  background:
+    radial-gradient(circle at 50% 50%, var(--spot) 0 4px, #000 4.5px 5.5px, transparent 6px) 0 0 / 28px 14px repeat-x;
+  animation: bulbs 1.2s steps(2) infinite;
+}
+@keyframes bulbs { 50% { filter: brightness(.55) saturate(.6); } }
+
+.curtain-edge {
+  height: 26px;
+  background: repeating-linear-gradient(90deg, var(--curtain) 0 36px, #B52331 36px 54px, var(--curtain) 54px 90px);
+  border-bottom: 4px solid #000;
+  clip-path: polygon(0 0, 100% 0, 100% 55%, 97% 100%, 93% 55%, 90% 100%, 86% 55%, 83% 100%, 79% 55%, 76% 100%, 72% 55%, 69% 100%, 65% 55%, 62% 100%, 58% 55%, 55% 100%, 51% 55%, 48% 100%, 44% 55%, 41% 100%, 37% 55%, 34% 100%, 30% 55%, 27% 100%, 23% 55%, 20% 100%, 16% 55%, 13% 100%, 9% 55%, 6% 100%, 3% 55%, 0 100%);
+}
+
+.stage-floor {
+  height: 22px; border-top: 4px solid #000;
+  background: repeating-linear-gradient(90deg, #8B5A2B 0 60px, #6F4520 60px 64px);
+}
+
+.spotlight-beam {
+  position: absolute; pointer-events: none; top: -40px;
+  width: 260px; height: 520px;
+  background: linear-gradient(180deg, rgba(255,214,10,.55), rgba(255,214,10,0));
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  transform-origin: top center;
+  animation: sway 6s ease-in-out infinite alternate;
+}
+@keyframes sway { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+
+.ticker { overflow: hidden; white-space: nowrap; border-top: 3px solid #000; border-bottom: 3px solid #000; background: #000; color: var(--spot); }
+.ticker > div { display: inline-block; padding: .6rem 0; animation: tick 28s linear infinite; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.wiggle:hover { animation: wiggle .4s ease; }
+@keyframes wiggle { 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+
+.ticket {
+  position: relative; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0 #000;
+}
+.ticket::before, .ticket::after {
+  content: ''; position: absolute; top: 50%; width: 22px; height: 22px; background: var(--cream);
+  border: 3px solid #000; border-radius: 50%; transform: translateY(-50%);
+}
+.ticket::before { left: -14px; }
+.ticket::after { right: -14px; }
+
+/* ───────────── Global overrides so older dashboard pages match ───────────── */
+input, select, textarea {
+  border: 3px solid #000 !important;
+  border-radius: 0 !important;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+}
+input:focus, select:focus, textarea:focus { outline: none !important; box-shadow: 4px 4px 0 var(--curtain) !important; }
+input::placeholder, textarea::placeholder { color: #777; }
+button { border-radius: 0; }
+[class*="rounded-"]:not([class*="rounded-full"]) { border-radius: 0 !important; }
+[style*="border-radius"]:not([style*="50%"]):not([style*="999"]) { border-radius: 0 !important; }
+[class*="bg-[#FFFFFF]"] { box-shadow: 4px 4px 0 #000; }
+[class*="border-[#111111]"] { border-color: #000 !important; }
