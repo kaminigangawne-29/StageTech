@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StageTech — Mumbai's Backstage & Technical Theatre Talent Platform</title>
+  <meta name="description" content="StageTech connects light & sound artists, designers, stage crew and PR pros with theatre productions across Mumbai and India — based on talent, not who you know.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF4D6;
+      --paper: #FFFFFF;
+      --ink: #000000;
+      --curtain: #E63946;
+      --spot: #FFD60A;
+      --stage-blue: #3A86FF;
+      --mint: #7AE582;
+      --lilac: #C8B6FF;
+      --pink: #FF8FAB;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--cream);
+      background-image: radial-gradient(#00000018 1.2px, transparent 1.2px);
+      background-size: 18px 18px;
+      color: var(--ink);
+      font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    }
+
+    /* ─── Neobrutalist Utility Components ─── */
+    .nb-card {
+      background: var(--paper);
+      border: 3px solid #000;
+      box-shadow: 6px 6px 0 #000;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .nb-card-hover:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 #000;
+    }
+
+    .nb-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      padding: .65rem 1.3rem;
+      border: 3px solid #000;
+      box-shadow: 4px 4px 0 #000;
+      background: var(--spot);
+      color: #000;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .1s ease, box-shadow .1s ease;
+      font-family: inherit;
+      font-size: .88rem;
+    }
+    .nb-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+    .nb-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 #000; }
+    .nb-btn-red { background: var(--curtain); color: #fff; }
+    .nb-btn-white { background: #fff; color: #000; }
+    .nb-btn-blue { background: var(--stage-blue); color: #fff; }
+
+    .nb-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-weight: 800;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: .2rem .6rem;
+      border: 2px solid #000;
+      background: var(--spot);
+      color: #000;
+    }
+
+    .nb-tag {
+      display: inline-block;
+      font-weight: 700;
+      font-size: .75rem;
+      padding: .15rem .55rem;
+      border: 2px solid #000;
+      background: var(--lilac);
+      color: #000;
+    }
+
+    /* ─── Theatrical Ornaments ─── */
+    .marquee-lights {
+      height: 14px;
+      background: radial-gradient(circle at 50% 50%, var(--spot) 0 4px, #000 4.5px 5.5px, transparent 6px) 0 0 / 28px 14px repeat-x;
+      animation: bulbs 1.2s steps(2) infinite;
+    }
+    @keyframes bulbs { 50% { filter: brightness(.55) saturate(.6); } }
+
+    .curtain-edge {
+      height: 26px;
+      background: repeating-linear-gradient(90deg, var(--curtain) 0 36px, #B52331 36px 54px, var(--curtain) 54px 90px);
+      border-bottom: 4px solid #000;
+      clip-path: polygon(0 0, 100% 0, 100% 55%, 97% 100%, 93% 55%, 90% 100%, 86% 55%, 83% 100%, 79% 55%, 76% 100%, 72% 55%, 69% 100%, 65% 55%, 62% 100%, 58% 55%, 55% 100%, 51% 55%, 48% 100%, 44% 55%, 41% 100%, 37% 55%, 34% 100%, 30% 55%, 27% 100%, 23% 55%, 20% 100%, 16% 55%, 13% 100%, 9% 55%, 6% 100%, 3% 55%, 0 100%);
+    }
+
+    .stage-floor {
+      height: 22px;
+      border-top: 4px solid #000;
+      background: repeating-linear-gradient(90deg, #8B5A2B 0 60px, #6F4520 60px 64px);
+    }
+
+    .spotlight-beam {
+      position: absolute;
+      pointer-events: none;
+      top: -40px;
+      width: 280px;
+      height: 540px;
+      background: linear-gradient(180deg, rgba(255,214,10,.55), rgba(255,214,10,0));
+      clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+      transform-origin: top center;
+      animation: sway 6s ease-in-out infinite alternate;
+    }
+    @keyframes sway { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+
+    .ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      border-top: 3px solid #000;
+      border-bottom: 3px solid #000;
+      background: #000;
+      color: var(--spot);
+    }
+    .ticker > div {
+      display: inline-block;
+      padding: .65rem 0;
+      animation: tick 24s linear infinite;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .9rem;
+    }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .nav-link {
+      font-size: .88rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: .4rem .8rem;
+      border: 2px solid transparent;
+      color: #000;
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .nav-link:hover, .nav-link.active {
+      border-color: #000;
+      background: #fff;
+      box-shadow: 3px 3px 0 #000;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      display: none; align-items: center; justify-content: center; z-index: 9999;
+      padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Marquee -->
+  <div class="marquee-lights" style="background-color: #000;"></div>
+
+  <!-- Navbar -->
+  <header style="background: var(--spot); border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 1000;">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; height: 64px;">
+      <a href="#hero" style="display: flex; align-items: center; gap: .5rem; text-decoration: none; color: #000;">
+        <span style="width: 38px; height: 38px; background: #000; color: var(--spot); border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">🎭</span>
+        <span style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">
+          Stage<span style="background: #000; color: var(--spot); padding: 0 .25rem; margin-left: 2px;">Tech</span>
+        </span>
+      </a>
+
+      <nav style="display: flex; align-items: center; gap: .5rem;">
+        <a href="#talent" class="nav-link">Find Talent</a>
+        <a href="#jobs" class="nav-link">Crew Calls</a>
+        <a href="#disciplines" class="nav-link">Crafts</a>
+        <button onclick="openApplyModal('General Backstage Join', 'Technician Registration')" class="nb-btn nb-btn-red" style="padding: .5rem 1rem; font-size: .8rem; margin-left: .5rem;">
+          Join Network
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" style="position: relative; background: #1a1a2e; border-bottom: 4px solid #000; overflow: hidden; padding-top: 3.5rem; padding-bottom: 5.5rem; text-align: center;">
+    <div class="curtain-edge" style="position: absolute; top: 0; left: 0; right: 0;"></div>
+    
+    <div class="spotlight-beam" style="left: 8%;"></div>
+    <div class="spotlight-beam" style="right: 8%; animation-delay: -3s;"></div>
+
+    <div class="container" style="position: relative; z-index: 2;">
+      <span class="nb-badge" style="background: var(--spot); margin-bottom: 1.5rem;">🎭 Mumbai’s Backstage Network</span>
+
+      <h1 style="font-size: clamp(2.5rem, 6.5vw, 5.5rem); font-weight: 900; text-transform: uppercase; line-height: 0.95; color: #fff; text-shadow: 6px 6px 0 #E63946; margin-bottom: 1.5rem;">
+        The Stage is Set.
+        <br>
+        <span style="background: var(--spot); color: #000; padding: .2rem .75rem; display: inline-block; transform: rotate(-1.5deg); border: 4px solid #000; box-shadow: 8px 8px 0 #000; text-shadow: none; margin-top: .75rem;">
+          Your Career Awaits.
+        </span>
+      </h1>
+
+      <p style="font-size: 1.15rem; font-weight: 700; color: var(--cream); max-width: 680px; margin: 0 auto 2rem; line-height: 1.5;">
+        StageTech connects light & sound artists, designers, stage crew, and PR professionals with productions across Mumbai and India — based on verified talent, not who you know.
+      </p>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="#talent" class="nb-btn nb-btn-red" style="font-size: 1rem; padding: .85rem 1.8rem;">🔦 Explore Backstage Talent</a>
+        <a href="#jobs" class="nb-btn nb-btn-white" style="font-size: 1rem; padding: .85rem 1.8rem;">🎬 View Active Crew Calls</a>
+      </div>
+    </div>
+
+    <div class="stage-floor" style="position: absolute; bottom: 0; left: 0; right: 0;"></div>
+  </section>
+
+  <!-- Marquee Ticker -->
+  <div class="ticker">
+    <div>
+      <span>🔦 Lighting Designers ✦</span>
+      <span>🎛️ Lighting Board Operators ✦</span>
+      <span>🎚️ Sound Designers ✦</span>
+      <span>🎧 Live Sound Mixers ✦</span>
+      <span>🎨 Art Directors ✦</span>
+      <span>🧵 Costume Designers ✦</span>
+      <span>🏛️ Set Designers ✦</span>
+      <span>📋 Stage Managers ✦</span>
+      <span>📣 Public Relations ✦</span>
+      <span>📍 Prithvi Theatre • NCPA • Rangsharda • Shivaji Mandir • NMACC ✦</span>
+      <span>🔦 Lighting Designers ✦</span>
+      <span>🎛️ Lighting Board Operators ✦</span>
+      <span>🎚️ Sound Designers ✦</span>
+      <span>🎧 Live Sound Mixers ✦</span>
+      <span>🎨 Art Directors ✦</span>
+    </div>
+  </div>
+
+  <!-- Key Statistics -->
+  <section style="background: var(--spot); border-bottom: 4px solid #000; padding: 2rem 0;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+        <div class="nb-card" style="padding: 1.25rem;">
+          <div style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900;">500+</div>
+          <div style="font-weight: 800; text-transform: uppercase; font-size: .85rem;">Verified Technicians</div>
+        </div>
+        <div class="nb-card" style="padding: 1.25rem;">
+          <div style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900;">200+</div>
+          <div style="font-weight: 800; text-transform: uppercase; font-size: .85rem;">Theatrical Productions</div>
+        </div>
+        <div class="nb-card" style="padding: 1.25rem;">
+          <div style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900;">50+</div>
+          <div style="font-weight: 800; text-transform: uppercase; font-size: .85rem;">Mumbai & Pune Venues</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Backstage Crafts / Disciplines -->
+  <section id="disciplines" style="padding: 4.5rem 0;">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span class="nb-badge" style="background: var(--lilac);">🎟️ Backstage Taxonomy</span>
+        <h2 style="font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Every Craft. Every Credit.</h2>
+        <p style="font-weight: 700; margin-top: .5rem;">Designers and operators are listed separately — because concept and live execution are distinct disciplines.</p>
+      </div>
+
+      <div class="grid-4">
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #FFD60A; transform: rotate(-1deg);">
+          <div style="font-size: 2.5rem;">🔦</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Lighting Designer</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Paints the stage with photometrics, colour palettes, and cue architecture.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #FFE98A; transform: rotate(1deg);">
+          <div style="font-size: 2.5rem;">🎛️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Lighting Operator</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Commands the console (ETC Eos, GrandMA3), tracking cues live during tech & show runs.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #3A86FF; color: #fff; transform: rotate(-1deg);">
+          <div style="font-size: 2.5rem;">🎚️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem; color: #fff;">Sound Designer</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Builds the sonic atmosphere, surround soundscapes, Foley, and show scores.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #9CC2FF; transform: rotate(1deg);">
+          <div style="font-size: 2.5rem;">🎧</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Live Sound Mixer</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Front-of-house mixing, RF wireless coordination, and live band balancing.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #C8B6FF; transform: rotate(1deg);">
+          <div style="font-size: 2.5rem;">🎨</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Art & Set Designer</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">3D AutoCAD scenic drafting, stage models, rotating decks, and paint finishes.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #FF8FAB; transform: rotate(-1deg);">
+          <div style="font-size: 2.5rem;">🧵</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Costume Designer</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Period wardrobe, fabric sourcing, distress treatments, and fast quick-changes.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #7AE582; transform: rotate(-1deg);">
+          <div style="font-size: 2.5rem;">📋</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Stage Manager</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Keeps the prompt book, calls cues, leads deck crew, and coordinates tech week.</p>
+        </div>
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; background: #FF9F68; transform: rotate(1deg);">
+          <div style="font-size: 2.5rem;">📣</div>
+          <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Public Relations</h3>
+          <p style="font-size: .9rem; font-weight: 700; margin-top: .25rem;">Theatre journalism outreach, critic previews, posters, and audience development.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Talent Directory -->
+  <section id="talent" style="background: #FF8FAB; border-top: 4px solid #000; border-bottom: 4px solid #000; padding: 4.5rem 0;">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: gap; margin-bottom: 2.5rem;">
+        <div>
+          <span class="nb-badge" style="background: #fff;">🎬 Backstage Directory</span>
+          <h2 style="font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900; text-transform: uppercase; margin-top: .5rem;">Featured Technicians & Designers</h2>
+          <p style="font-weight: 700; margin-top: .25rem;">Filtered by discipline, locality, and real theatrical credits.</p>
+        </div>
+        <div style="display: flex; gap: .5rem; flex-wrap: wrap;">
+          <button onclick="filterTalent('ALL')" class="nb-btn nb-btn-white filter-btn active" data-filter="ALL">All</button>
+          <button onclick="filterTalent('LIGHT')" class="nb-btn nb-btn-white filter-btn" data-filter="LIGHT">💡 Light</button>
+          <button onclick="filterTalent('SOUND')" class="nb-btn nb-btn-white filter-btn" data-filter="SOUND">🎧 Sound</button>
+          <button onclick="filterTalent('DESIGN')" class="nb-btn nb-btn-white filter-btn" data-filter="DESIGN">🎨 Design</button>
+          <button onclick="filterTalent('STAGE')" class="nb-btn nb-btn-white filter-btn" data-filter="STAGE">📋 Stage Mgmt</button>
+        </div>
+      </div>
+
+      <!-- Talent Grid -->
+      <div id="talentGrid" class="grid-3">
+        <!-- Aarav Mehta -->
+        <div class="nb-card nb-card-hover" data-category="LIGHT" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80" alt="Aarav Mehta" style="width: 64px; height: 64px; border: 3px solid #000; object-fit: cover;">
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">Aarav Mehta</h3>
+              <span class="nb-badge" style="background: #FFD60A;">Lighting Designer</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem;">
+            <span>📍 Andheri, Mumbai</span>
+            <span class="nb-badge" style="background: #7AE582;">AVAILABLE</span>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">8+ years crafting sculptural looks for Hindi and Marathi plays across Prithvi, NCPA, and Rangsharda.</p>
+          <div style="display: flex; gap: .4rem; flex-wrap: wrap;">
+            <span class="nb-tag">ETC Eos</span>
+            <span class="nb-tag">Vectorworks</span>
+            <span class="nb-tag">DMX / sACN</span>
+          </div>
+          <button onclick="openApplyModal('Aarav Mehta', 'Lighting Designer')" class="nb-btn nb-btn-white" style="margin-top: auto; width: 100%;">Contact / Book →</button>
+        </div>
+
+        <!-- Meera Iyer -->
+        <div class="nb-card nb-card-hover" data-category="SOUND" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Meera Iyer" style="width: 64px; height: 64px; border: 3px solid #000; object-fit: cover;">
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">Meera Iyer</h3>
+              <span class="nb-badge" style="background: #3A86FF; color: #fff;">Sound Designer</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem;">
+            <span>📍 Bandra, Mumbai</span>
+            <span class="nb-badge" style="background: #FFD60A;">OPEN TO OFFERS</span>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">Theatrical sound designer composing immersive spatial audio and live Foley for contemporary drama.</p>
+          <div style="display: flex; gap: .4rem; flex-wrap: wrap;">
+            <span class="nb-tag">QLab 5</span>
+            <span class="nb-tag">Dante Audio</span>
+            <span class="nb-tag">Ableton Live</span>
+          </div>
+          <button onclick="openApplyModal('Meera Iyer', 'Sound Designer')" class="nb-btn nb-btn-white" style="margin-top: auto; width: 100%;">Contact / Book →</button>
+        </div>
+
+        <!-- Sophia D’Souza -->
+        <div class="nb-card nb-card-hover" data-category="DESIGN" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&auto=format&fit=crop&q=80" alt="Sophia D’Souza" style="width: 64px; height: 64px; border: 3px solid #000; object-fit: cover;">
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">Sophia D’Souza</h3>
+              <span class="nb-badge" style="background: #FF8FAB;">Costume Designer</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem;">
+            <span>📍 Bandra, Mumbai</span>
+            <span class="nb-badge" style="background: #7AE582;">AVAILABLE</span>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">Period costume design with sustainable fabric sourcing, hand-block prints, and quick-change riggings.</p>
+          <div style="display: flex; gap: .4rem; flex-wrap: wrap;">
+            <span class="nb-tag">Costume Drafting</span>
+            <span class="nb-tag">Period Wardrobe</span>
+          </div>
+          <button onclick="openApplyModal('Sophia D’Souza', 'Costume Designer')" class="nb-btn nb-btn-white" style="margin-top: auto; width: 100%;">Contact / Book →</button>
+        </div>
+
+        <!-- Rohan Deshmukh -->
+        <div class="nb-card nb-card-hover" data-category="LIGHT" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="width: 64px; height: 64px; border: 3px solid #000; background: #FFE98A; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900;">RD</div>
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">Rohan Deshmukh</h3>
+              <span class="nb-badge" style="background: #FFE98A;">Lighting Operator</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem;">
+            <span>📍 Dadar, Mumbai</span>
+            <span class="nb-badge" style="background: #7AE582;">AVAILABLE</span>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">Experienced board operator on ETC Ion and GrandMA3. Ran 90+ cues nightly for long runs at Shivaji Mandir.</p>
+          <div style="display: flex; gap: .4rem; flex-wrap: wrap;">
+            <span class="nb-tag">ETC Ion</span>
+            <span class="nb-tag">GrandMA3</span>
+            <span class="nb-tag">Cue Tracking</span>
+          </div>
+          <button onclick="openApplyModal('Rohan Deshmukh', 'Lighting Operator')" class="nb-btn nb-btn-white" style="margin-top: auto; width: 100%;">Contact / Book →</button>
+        </div>
+
+        <!-- Imran Qureshi -->
+        <div class="nb-card nb-card-hover" data-category="SOUND" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="width: 64px; height: 64px; border: 3px solid #000; background: #9CC2FF; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900;">IQ</div>
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">Imran Qureshi</h3>
+              <span class="nb-badge" style="background: #9CC2FF;">Live Sound Mixer</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem;">
+            <span>📍 Borivali, Mumbai</span>
+            <span class="nb-badge" style="background: #7AE582;">AVAILABLE</span>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">FOH audio mixing, RF mic frequency coordination, and live orchestra sound engineering.</p>
+          <div style="display: flex; gap: .4rem; flex-wrap: wrap;">
+            <span class="nb-tag">Yamaha CL/QL</span>
+            <span class="nb-tag">Wireless RF</span>
+            <span class="nb-tag">QLab</span>
+          </div>
+          <button onclick="openApplyModal('Imran Qureshi', 'Live Sound Mixer')" class="nb-btn nb-btn-white" style="margin-top: auto; width: 100%;">Contact / Book →</button>
+        </div>
+
+        <!-- Neha Kulkarni -->
+        <div class="nb-card nb-card-hover" data-category="STAGE" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div style="width: 64px; height: 64px; border: 3px solid #000; background: #7AE582; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900;">NK</div>
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 900; text-transform: uppercase;">Neha Kulkarni</h3>
+              <span class="nb-badge" style="background: #7AE582;">Stage Manager</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: .85rem;">
+            <span>📍 Thane, Mumbai</span>
+            <span class="nb-badge" style="background: #7AE582;">AVAILABLE</span>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">10+ years calling major musical and drama cues, organizing technical rehearsals, and running prompt books.</p>
+          <div style="display: flex; gap: .4rem; flex-wrap: wrap;">
+            <span class="nb-tag">Cue Calling</span>
+            <span class="nb-tag">Deck Crew Lead</span>
+          </div>
+          <button onclick="openApplyModal('Neha Kulkarni', 'Stage Manager')" class="nb-btn nb-btn-white" style="margin-top: auto; width: 100%;">Contact / Book →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Crew Calls / Job Board -->
+  <section id="jobs" style="padding: 4.5rem 0; background: var(--stage-blue); border-bottom: 4px solid #000;">
+    <div class="container">
+      <div style="margin-bottom: 2.5rem;">
+        <span class="nb-badge" style="background: var(--spot);">🎟️ Now Casting Crew</span>
+        <h2 style="font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900; text-transform: uppercase; color: #fff; text-shadow: 4px 4px 0 #000; margin-top: .5rem;">
+          Open Backstage Positions
+        </h2>
+        <p style="font-weight: 700; color: #fff; margin-top: .25rem;">Active crew calls from Mumbai repertory companies and independent producers.</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Job 1 -->
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; border-left: 14px solid #FFD60A;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <h3 style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase;">Lighting Operator — Autumn Block</h3>
+            <span class="nb-badge" style="background: var(--spot);">₹2,500 / show</span>
+          </div>
+          <div style="font-weight: 800; font-size: .9rem;">🎭 Prithvi Players</div>
+          <span class="nb-badge" style="background: #FFE98A; align-self: flex-start;">Lighting Operator</span>
+          <div style="font-size: .85rem; font-weight: 700;">
+            <div>📅 Nov 1 – Dec 22, 2026</div>
+            <div>📍 Prithvi Theatre, Juhu</div>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">Need an experienced ETC Eos board operator for a 7-week block. Must be comfortable with tight technical rehearsals and cue tracking.</p>
+          <button onclick="openApplyModal('Lighting Operator — Autumn Block', 'Prithvi Players')" class="nb-btn nb-btn-red" style="margin-top: auto; width: 100%;">Apply for Role →</button>
+        </div>
+
+        <!-- Job 2 -->
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; border-left: 14px solid #3A86FF;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <h3 style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase;">Sound Operator — QLab & Live Band</h3>
+            <span class="nb-badge" style="background: var(--spot);">₹2,200 / show</span>
+          </div>
+          <div style="font-weight: 800; font-size: .9rem;">🎭 Prithvi Players</div>
+          <span class="nb-badge" style="background: #9CC2FF; align-self: flex-start;">Live Sound Mixer</span>
+          <div style="font-size: .85rem; font-weight: 700;">
+            <div>📅 Nov 15, 2026 – Jan 10, 2027</div>
+            <div>📍 Prithvi Theatre, Juhu</div>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">Mix an onstage 5-piece acoustic ensemble and 10 wireless lavalier microphones with QLab 5 digital playback.</p>
+          <button onclick="openApplyModal('Sound Operator — QLab & Live Band', 'Prithvi Players')" class="nb-btn nb-btn-red" style="margin-top: auto; width: 100%;">Apply for Role →</button>
+        </div>
+
+        <!-- Job 3 -->
+        <div class="nb-card nb-card-hover" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; border-left: 14px solid #E63946;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <h3 style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase;">Lighting Designer — New Original</h3>
+            <span class="nb-badge" style="background: var(--spot);">₹60,000 total</span>
+          </div>
+          <div style="font-weight: 800; font-size: .9rem;">🎭 Rangmanch Productions</div>
+          <span class="nb-badge" style="background: #FFD60A; align-self: flex-start;">Lighting Designer</span>
+          <div style="font-size: .85rem; font-weight: 700;">
+            <div>📅 Dec 5, 2026 – Jan 20, 2027</div>
+            <div>📍 NCPA & Rangsharda, Mumbai</div>
+          </div>
+          <p style="font-size: .85rem; font-weight: 600; line-height: 1.4;">Designing complete lighting architecture for a full 2-act Hindi production. Deliver plot, channel schedules, and tech cues.</p>
+          <button onclick="openApplyModal('Lighting Designer — New Original', 'Rangmanch Productions')" class="nb-btn nb-btn-red" style="margin-top: auto; width: 100%;">Apply for Role →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Application / Contact Modal -->
+  <div id="applyModal" class="modal-backdrop">
+    <div class="nb-card" style="max-width: 500px; width: 100%; padding: 2rem; background: #fff; position: relative;">
+      <button onclick="closeApplyModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; font-weight: 900; cursor: pointer;">✕</button>
+      <span class="nb-badge" id="modalTag" style="margin-bottom: .75rem;">🎭 StageTech Direct Connect</span>
+      <h3 id="modalTitle" style="font-size: 1.4rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem;">Direct Inquiry</h3>
+      
+      <form id="modalForm" onsubmit="handleModalSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div>
+          <label style="display: block; font-size: .8rem; font-weight: 800; text-transform: uppercase; margin-bottom: .25rem;">Your Name</label>
+          <input required type="text" placeholder="e.g. Rahul Sharma" style="width: 100%; border: 3px solid #000; padding: .6rem; font-weight: 700; font-family: inherit;">
+        </div>
+        <div>
+          <label style="display: block; font-size: .8rem; font-weight: 800; text-transform: uppercase; margin-bottom: .25rem;">Email or Phone</label>
+          <input required type="text" placeholder="e.g. rahul@example.com or +91 98..." style="width: 100%; border: 3px solid #000; padding: .6rem; font-weight: 700; font-family: inherit;">
+        </div>
+        <div>
+          <label style="display: block; font-size: .8rem; font-weight: 800; text-transform: uppercase; margin-bottom: .25rem;">Message / Experience</label>
+          <textarea required rows="3" placeholder="Briefly describe your interest or background…" style="width: 100%; border: 3px solid #000; padding: .6rem; font-weight: 600; font-family: inherit; resize: none;"></textarea>
+        </div>
+        <button type="submit" class="nb-btn nb-btn-red" style="width: 100%; padding: .8rem;">Submit Details ✦</button>
+      </form>
+      <div id="modalSuccess" style="display: none; padding: 1rem; background: #7AE582; border: 3px solid #000; font-weight: 800; margin-top: 1rem; text-align: center;">
+        ✓ Details submitted successfully! We will connect you shortly.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="background: #000; color: var(--cream); border-top: 4px solid #000; padding: 2.5rem 0;">
+    <div class="marquee-lights" style="margin-bottom: 1.5rem;"></div>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="font-size: 1.3rem; font-weight: 900; text-transform: uppercase;">
+        🎭 Stage<span style="color: var(--spot);">Tech</span>
+      </div>
+      <div style="font-weight: 700; font-size: .85rem;">
+        Made for Mumbai’s Theatre Community • Prithvi, NCPA & Independent Stages
+      </div>
+      <div style="font-size: .8rem; opacity: .8;">
+        © 2026 StageTech. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function filterTalent(category) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === category);
+        btn.style.background = btn.getAttribute('data-filter') === category ? '#000' : '#fff';
+        btn.style.color = btn.getAttribute('data-filter') === category ? '#fff' : '#000';
+      });
+
+      const cards = document.querySelectorAll('#talentGrid > div');
+      cards.forEach(card => {
+        if (category === 'ALL' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function openApplyModal(title, subtitle) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalTag').innerText = subtitle;
+      document.getElementById('modalSuccess').style.display = 'none';
+      document.getElementById('modalForm').style.display = 'flex';
+      document.getElementById('applyModal').classList.add('open');
+    }
+
+    function closeApplyModal() {
+      document.getElementById('applyModal').classList.remove('open');
+    }
+
+    function handleModalSubmit(e) {
+      e.preventDefault();
+      document.getElementById('modalForm').style.display = 'none';
+      document.getElementById('modalSuccess').style.display = 'block';
+      setTimeout(() => {
+        closeApplyModal();
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
