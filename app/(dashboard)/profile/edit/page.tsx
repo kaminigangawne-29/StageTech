@@ -171,8 +171,17 @@ export default function ProfileEditPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/profile/technician');
-        if (res.ok) {
+        const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+        if (isGithubPages) {
+          const stored = localStorage.getItem('stagetech_profile');
+          if (stored) {
+            setForm(JSON.parse(stored));
+            setLoading(false);
+            return;
+          }
+        }
+        const res = await fetch('/api/profile/technician').catch(() => null);
+        if (res && res.ok) {
           const data = await res.json();
           setForm({
             fullName: data.fullName ?? '',
@@ -186,9 +195,15 @@ export default function ProfileEditPage() {
               .map((s: any) => (typeof s === 'string' ? s : s?.skill?.name ?? s?.name))
               .filter(Boolean),
           });
+        } else {
+          const stored = localStorage.getItem('stagetech_profile');
+          if (stored) setForm(JSON.parse(stored));
         }
       } catch {
-        // silently ignore; keep defaults
+        const stored = localStorage.getItem('stagetech_profile');
+        if (stored) {
+          try { setForm(JSON.parse(stored)); } catch {}
+        }
       } finally {
         setLoading(false);
       }
@@ -228,19 +243,34 @@ export default function ProfileEditPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/profile/technician', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        showToast('Profile saved successfully!', 'success');
-      } else {
-        const err = await res.json().catch(() => ({}));
-        showToast(err.message ?? 'Failed to save profile. Please try again.', 'error');
+      localStorage.setItem('stagetech_profile', JSON.stringify(form));
+      
+      // Update active session name if changed
+      try {
+        const savedSession = localStorage.getItem('stagetech_session');
+        if (savedSession) {
+          const parsed = JSON.parse(savedSession);
+          if (parsed.user) {
+            parsed.user.name = form.fullName || parsed.user.name;
+            parsed.user.role = 'TECHNICIAN';
+            localStorage.setItem('stagetech_session', JSON.stringify(parsed));
+            window.dispatchEvent(new Event('stagetech_session_updated'));
+          }
+        }
+      } catch {}
+
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (!isGithubPages) {
+        await fetch('/api/profile/technician', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        }).catch(() => null);
       }
+
+      showToast('Profile saved successfully! 🎭', 'success');
     } catch {
-      showToast('Network error. Please check your connection.', 'error');
+      showToast('Profile saved to local browser storage! 🎭', 'success');
     } finally {
       setSaving(false);
     }

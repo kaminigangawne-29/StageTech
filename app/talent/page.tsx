@@ -74,50 +74,50 @@ const MOCK_TECHNICIANS = [
     id: 'demo-tech-1',
     fullName: 'Aarav Mehta',
     name: 'Aarav Mehta',
-    primaryDiscipline: 'LIGHTING',
+    primaryDiscipline: 'LIGHTING_DESIGNER',
     locationCity: 'Mumbai',
     availabilityStatus: 'AVAILABLE',
-    skills: ['GrandMA3', 'QLab 5', 'Rigging', 'DMX Protocol'],
+    skills: ['GrandMA3', 'QLab 5', 'Rigging', 'DMX Protocol', 'Vectorworks'],
     profileImageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop'
   },
   {
     id: 'demo-tech-2',
     fullName: 'Rhea Sharma',
     name: 'Rhea Sharma',
-    primaryDiscipline: 'SOUND',
+    primaryDiscipline: 'LIGHTING_OPERATOR',
     locationCity: 'Mumbai',
     availabilityStatus: 'OPEN_TO_OFFERS',
-    skills: ['Yamaha CL5', 'Sennheiser Wireless', 'Logic Pro', 'FOH Mixing'],
+    skills: ['ETC Ion', 'DMX Patching', 'Moving Heads', 'Spotlight Operation'],
     profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop'
   },
   {
     id: 'demo-tech-3',
     fullName: 'Vikram Kulkarni',
     name: 'Vikram Kulkarni',
-    primaryDiscipline: 'STAGE_MANAGEMENT',
+    primaryDiscipline: 'SOUND_DESIGNER',
     locationCity: 'Mumbai',
     availabilityStatus: 'AVAILABLE',
-    skills: ['Prompt Book', 'Cue Calling', 'Backstage Ops', 'Safety Protocols'],
+    skills: ['Logic Pro', 'QLab 5', 'Foley Sound', 'Spatial Audio'],
     profileImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop'
   },
   {
     id: 'demo-tech-4',
     fullName: 'Ananya Roy',
     name: 'Ananya Roy',
-    primaryDiscipline: 'SET_DESIGN',
+    primaryDiscipline: 'SOUND_OPERATOR',
     locationCity: 'Mumbai',
     availabilityStatus: 'AVAILABLE',
-    skills: ['SketchUp', '3D Drafting', 'Prop Fabrication', 'Scenic Painting'],
+    skills: ['Yamaha CL5', 'Sennheiser Wireless', 'FOH Mixing', 'Microphone Patching'],
     profileImageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop'
   },
   {
     id: 'demo-tech-5',
     fullName: 'Karan Joshi',
     name: 'Karan Joshi',
-    primaryDiscipline: 'COSTUME',
+    primaryDiscipline: 'STAGE_MANAGER',
     locationCity: 'Mumbai',
     availabilityStatus: 'BOOKED',
-    skills: ['Period Costumes', 'Tailoring', 'Drape Design', 'Quick Changes'],
+    skills: ['Prompt Book', 'Cue Calling', 'Backstage Ops', 'Safety Protocols'],
     profileImageUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=300&auto=format&fit=crop'
   }
 ];

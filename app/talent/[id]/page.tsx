@@ -58,11 +58,46 @@ export default async function TechnicianProfilePage({ params }: { params: { id: 
     // DB query error fallback
   }
 
-  const demoProfile = {
+  const mockTalentMap: Record<string, any> = {
+    'demo-tech-1': {
+      id: 'demo-tech-1',
+      userId: 'demo-user-1',
+      fullName: 'Aarav Mehta',
+      primaryDiscipline: 'LIGHTING_DESIGNER',
+      locationCity: 'Mumbai',
+      availabilityStatus: 'AVAILABLE',
+      profileImageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop',
+      bio: 'Experienced Lighting Designer & Programmer with 7+ years in Mumbai theatre productions across Prithvi Theatre, NCPA, and Royal Opera House.',
+      phone: '+91 98765 43210',
+      websiteUrl: 'https://stagetech.demo',
+      user: { id: 'demo-user-1', email: 'aarav.lighting@example.com' },
+      skills: [{ skill: { name: 'GrandMA3' } }, { skill: { name: 'QLab 5' } }, { skill: { name: 'DMX Protocol' } }, { skill: { name: 'Vectorworks' } }],
+      portfolioItems: [{ id: 'p1', title: 'Prithvi Theatre Lighting', description: 'Full stage lighting design for 30-day run.', mediaType: 'IMAGE', mediaUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop', sortOrder: 1 }],
+      productionHistory: [{ id: 'h1', showTitle: 'Mughal-e-Azam Musical', company: 'NCPA Mumbai', roleHeld: 'Lighting Designer', startDate: new Date('2023-01-01'), endDate: new Date('2023-06-01'), description: 'Managed grand stage lighting design.' }]
+    },
+    'demo-tech-2': {
+      id: 'demo-tech-2',
+      userId: 'demo-user-2',
+      fullName: 'Rhea Sharma',
+      primaryDiscipline: 'LIGHTING_OPERATOR',
+      locationCity: 'Mumbai',
+      availabilityStatus: 'OPEN_TO_OFFERS',
+      profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop',
+      bio: 'Lighting Board Operator specializing in ETC Ion and GrandMA consoles.',
+      phone: '+91 98200 11223',
+      websiteUrl: 'https://rheasharma.demo',
+      user: { id: 'demo-user-2', email: 'rhea.lighting@example.com' },
+      skills: [{ skill: { name: 'ETC Ion' } }, { skill: { name: 'DMX Patching' } }, { skill: { name: 'Moving Heads' } }],
+      portfolioItems: [],
+      productionHistory: [{ id: 'h2', showTitle: 'Taj Mahal ka Tender', company: 'Prithvi Players', roleHeld: 'Lighting Board Operator', startDate: new Date('2023-07-01'), endDate: new Date('2023-12-01'), description: 'Ran live cues across 24 performances.' }]
+    }
+  };
+
+  const defaultDemoProfile = {
     id: params.id || 'demo',
     userId: 'demo-user',
     fullName: 'Aarav Mehta',
-    primaryDiscipline: 'LIGHTING',
+    primaryDiscipline: 'LIGHTING_DESIGNER',
     locationCity: 'Mumbai',
     availabilityStatus: 'AVAILABLE',
     profileImageUrl: null,
@@ -70,18 +105,12 @@ export default async function TechnicianProfilePage({ params }: { params: { id: 
     phone: '+91 98765 43210',
     websiteUrl: 'https://stagetech.demo',
     user: { id: 'demo-user', email: 'aarav.lighting@example.com' },
-    skills: [
-      { skill: { name: 'GrandMA3' } },
-      { skill: { name: 'QLab 5' } },
-      { skill: { name: 'Rigging' } },
-    ],
-    portfolioItems: [
-      { id: 'p1', title: 'Prithvi Theatre Lighting', description: 'Full stage lighting design for 30-day run.', mediaType: 'IMAGE', mediaUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop', sortOrder: 1 }
-    ],
-    productionHistory: [
-      { id: 'h1', showTitle: 'Mughal-e-Azam Musical', company: 'NCPA Mumbai', roleHeld: 'Lead Lighting Tech', startDate: new Date('2023-01-01'), endDate: new Date('2023-06-01'), description: 'Managed grand stage lighting setup.' }
-    ]
+    skills: [{ skill: { name: 'GrandMA3' } }, { skill: { name: 'QLab 5' } }, { skill: { name: 'Rigging' } }],
+    portfolioItems: [{ id: 'p1', title: 'Prithvi Theatre Lighting', description: 'Full stage lighting design for 30-day run.', mediaType: 'IMAGE', mediaUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop', sortOrder: 1 }],
+    productionHistory: [{ id: 'h1', showTitle: 'Mughal-e-Azam Musical', company: 'NCPA Mumbai', roleHeld: 'Lighting Designer', startDate: new Date('2023-01-01'), endDate: new Date('2023-06-01'), description: 'Managed grand stage lighting setup.' }]
   };
+
+  const demoProfile = mockTalentMap[params.id] || defaultDemoProfile;
 
   const profile = rawProfile || demoProfile;
 

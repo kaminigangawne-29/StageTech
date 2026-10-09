@@ -46,27 +46,63 @@ export default async function JobDetailPage({ params }: { params: { id: string }
     // DB query error fallback
   }
 
-  const demoJob = {
-    id: params.id || 'demo',
-    title: 'Senior Stage Lighting Tech',
-    roleNeeded: 'LIGHTING',
-    status: 'OPEN',
-    location: 'Prithvi Theatre, Juhu, Mumbai',
-    startDate: new Date(),
-    endDate: null,
-    budget: '₹3,500 / day',
-    description: 'Looking for an experienced lighting technician for an upcoming 15-day show run in Mumbai.',
-    skillsRequired: JSON.stringify(['GrandMA3', 'Stage Rigging', 'QLab']),
-    company: {
-      id: 'c1',
-      companyName: 'Prithvi Players',
-      description: 'Leading theatre production house in Mumbai.',
-      website: 'https://prithvitheatre.org',
-      location: 'Mumbai',
-      logoUrl: null,
-      userId: 'prod-demo'
+  const mockJobsMap: Record<string, any> = {
+    'demo-job-1': {
+      id: 'demo-job-1',
+      title: 'Senior Stage Lighting Designer',
+      roleNeeded: 'LIGHTING_DESIGNER',
+      status: 'OPEN',
+      location: 'Prithvi Theatre, Juhu, Mumbai',
+      startDate: new Date('2026-10-15'),
+      endDate: new Date('2026-10-30'),
+      budget: '₹3,500 / day',
+      description: 'Seeking an experienced Lighting Designer to design lights and atmosphere for a 15-day production run of a contemporary Hindi drama at Prithvi Theatre.',
+      skillsRequired: JSON.stringify(['GrandMA3', 'QLab 5', 'DMX Protocol', 'Vectorworks']),
+      company: { id: 'c1', companyName: 'Prithvi Players', description: 'Leading theatre production house in Mumbai.', website: 'https://prithvitheatre.org', location: 'Mumbai', logoUrl: null, userId: 'prod-demo' }
+    },
+    'demo-job-2': {
+      id: 'demo-job-2',
+      title: 'Lead Lighting Board Operator',
+      roleNeeded: 'LIGHTING_OPERATOR',
+      status: 'OPEN',
+      location: 'NCPA, Nariman Point, Mumbai',
+      startDate: new Date('2026-11-01'),
+      endDate: new Date('2026-11-15'),
+      budget: '₹3,000 / day',
+      description: 'Operating GrandMA3 console live during show runs, executing lighting cues and maintaining stage fixtures.',
+      skillsRequired: JSON.stringify(['ETC Ion', 'DMX Patching', 'Moving Heads']),
+      company: { id: 'c2', companyName: 'Royal Stage Productions', description: 'Renowned production company producing grand stage shows.', website: 'https://ncpamumbai.com', location: 'Mumbai', logoUrl: null, userId: 'prod-demo-2' }
+    },
+    'demo-job-3': {
+      id: 'demo-job-3',
+      title: 'Sound Designer & Audio Producer',
+      roleNeeded: 'SOUND_DESIGNER',
+      status: 'OPEN',
+      location: 'Royal Opera House, Mumbai',
+      startDate: new Date('2026-11-05'),
+      endDate: new Date('2026-11-20'),
+      budget: '₹40,000 fixed',
+      description: 'Composing soundscapes, atmospheric audio, and cueing sound effects for a major theatre musical production.',
+      skillsRequired: JSON.stringify(['Logic Pro', 'QLab 5', 'Spatial Audio']),
+      company: { id: 'c3', companyName: 'Drama Circle Mumbai', description: 'Experimental and classical drama group.', website: 'https://dramacircle.in', location: 'Mumbai', logoUrl: null, userId: 'prod-demo-3' }
     }
   };
+
+  const defaultDemoJob = {
+    id: params.id || 'demo',
+    title: 'Senior Stage Lighting Designer',
+    roleNeeded: 'LIGHTING_DESIGNER',
+    status: 'OPEN',
+    location: 'Prithvi Theatre, Juhu, Mumbai',
+    startDate: new Date('2026-10-15'),
+    endDate: new Date('2026-10-30'),
+    budget: '₹3,500 / day',
+    description: 'Seeking an experienced Lighting Designer to design lights and atmosphere for a 15-day production run of a contemporary Hindi drama at Prithvi Theatre.',
+    skillsRequired: JSON.stringify(['GrandMA3', 'QLab 5', 'DMX Protocol']),
+    company: { id: 'c1', companyName: 'Prithvi Players', description: 'Leading theatre production house in Mumbai.', website: 'https://prithvitheatre.org', location: 'Mumbai', logoUrl: null, userId: 'prod-demo' }
+  };
+
+  const demoJob = mockJobsMap[params.id] || defaultDemoJob;
 
   const job = rawJob || demoJob;
 
