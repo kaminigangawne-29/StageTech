@@ -7,15 +7,18 @@ import InquiryButton from '@/components/InquiryButton';
 export const dynamic = 'auto';
 
 export async function generateStaticParams() {
+  const mockIds = ['demo', 'demo-tech-1', 'demo-tech-2', 'demo-tech-3', 'demo-tech-4', 'demo-tech-5'];
   try {
     const profiles = await prisma.technicianProfile.findMany({ select: { id: true } });
     if (profiles && profiles.length > 0) {
-      return profiles.map((p) => ({ id: p.id }));
+      const dbIds = profiles.map((p) => ({ id: p.id }));
+      const all = [...dbIds, ...mockIds.map((id) => ({ id }))];
+      return all;
     }
   } catch {
-    // fallback for static export without DB
+    // fallback
   }
-  return [{ id: 'demo' }];
+  return mockIds.map((id) => ({ id }));
 }
 
 const AVAIL: Record<string, { bg: string; label: string }> = {
@@ -90,6 +93,54 @@ export default async function TechnicianProfilePage({ params }: { params: { id: 
       skills: [{ skill: { name: 'ETC Ion' } }, { skill: { name: 'DMX Patching' } }, { skill: { name: 'Moving Heads' } }],
       portfolioItems: [],
       productionHistory: [{ id: 'h2', showTitle: 'Taj Mahal ka Tender', company: 'Prithvi Players', roleHeld: 'Lighting Board Operator', startDate: new Date('2023-07-01'), endDate: new Date('2023-12-01'), description: 'Ran live cues across 24 performances.' }]
+    },
+    'demo-tech-3': {
+      id: 'demo-tech-3',
+      userId: 'demo-user-3',
+      fullName: 'Vikram Kulkarni',
+      primaryDiscipline: 'SOUND_DESIGNER',
+      locationCity: 'Mumbai',
+      availabilityStatus: 'AVAILABLE',
+      profileImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop',
+      bio: 'Theatre Sound Designer and Audio Engineer specializing in multi-channel QLab playback and acoustic soundscapes.',
+      phone: '+91 98333 44556',
+      websiteUrl: 'https://vikramsound.demo',
+      user: { id: 'demo-user-3', email: 'vikram.sound@example.com' },
+      skills: [{ skill: { name: 'Logic Pro' } }, { skill: { name: 'QLab 5' } }, { skill: { name: 'Foley Sound' } }],
+      portfolioItems: [],
+      productionHistory: [{ id: 'h3', showTitle: 'Hamlet Hindi Adapt.', company: 'Royal Opera House', roleHeld: 'Sound Designer', startDate: new Date('2023-02-01'), endDate: new Date('2023-08-01'), description: 'Composed live surround soundscapes.' }]
+    },
+    'demo-tech-4': {
+      id: 'demo-tech-4',
+      userId: 'demo-user-4',
+      fullName: 'Ananya Roy',
+      primaryDiscipline: 'SOUND_OPERATOR',
+      locationCity: 'Mumbai',
+      availabilityStatus: 'AVAILABLE',
+      profileImageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop',
+      bio: 'FOH Sound Mixing Operator with 5+ years experience running live sound for drama & musicals in Mumbai.',
+      phone: '+91 98111 22334',
+      websiteUrl: 'https://ananyasound.demo',
+      user: { id: 'demo-user-4', email: 'ananya.sound@example.com' },
+      skills: [{ skill: { name: 'Yamaha CL5' } }, { skill: { name: 'Sennheiser Wireless' } }, { skill: { name: 'FOH Mixing' } }],
+      portfolioItems: [],
+      productionHistory: [{ id: 'h4', showTitle: 'Aankhein Theatre Show', company: 'NCPA Mumbai', roleHeld: 'Sound Operator', startDate: new Date('2023-03-01'), endDate: new Date('2023-09-01'), description: 'Operated live wireless microphones and FOH mix.' }]
+    },
+    'demo-tech-5': {
+      id: 'demo-tech-5',
+      userId: 'demo-user-5',
+      fullName: 'Karan Joshi',
+      primaryDiscipline: 'STAGE_MANAGER',
+      locationCity: 'Mumbai',
+      availabilityStatus: 'BOOKED',
+      profileImageUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=300&auto=format&fit=crop',
+      bio: 'Veteran Stage Manager keeping backstage runs seamless, safe, and right on cue.',
+      phone: '+91 98444 55667',
+      websiteUrl: 'https://karanstagemanager.demo',
+      user: { id: 'demo-user-5', email: 'karan.sm@example.com' },
+      skills: [{ skill: { name: 'Prompt Book' } }, { skill: { name: 'Cue Calling' } }, { skill: { name: 'Backstage Ops' } }],
+      portfolioItems: [],
+      productionHistory: [{ id: 'h5', showTitle: 'Dear Liar', company: 'Prithvi Theatre', roleHeld: 'Stage Manager', startDate: new Date('2023-04-01'), endDate: new Date('2023-10-01'), description: 'Managed prompt book and called all technical cues.' }]
     }
   };
 

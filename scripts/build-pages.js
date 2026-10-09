@@ -37,6 +37,10 @@ try {
   if (fs.existsSync(outDir)) {
     fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
     console.log('Created .nojekyll in out/');
+    if (fs.existsSync(path.join(outDir, 'index.html'))) {
+      fs.copyFileSync(path.join(outDir, 'index.html'), path.join(outDir, '404.html'));
+      console.log('Created 404.html SPA fallback in out/');
+    }
   }
 
   console.log('Static build completed successfully!');

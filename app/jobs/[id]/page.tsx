@@ -7,15 +7,18 @@ import ApplyForm from '@/components/ApplyForm';
 export const dynamic = 'auto';
 
 export async function generateStaticParams() {
+  const mockIds = ['demo', 'demo-job-1', 'demo-job-2', 'demo-job-3', 'demo-job-4', 'demo-job-5', 'demo-job-6'];
   try {
     const jobs = await prisma.jobPosting.findMany({ select: { id: true } });
     if (jobs && jobs.length > 0) {
-      return jobs.map((j) => ({ id: j.id }));
+      const dbIds = jobs.map((j) => ({ id: j.id }));
+      const all = [...dbIds, ...mockIds.map((id) => ({ id }))];
+      return all;
     }
   } catch {
-    // fallback for static export without DB
+    // fallback
   }
-  return [{ id: 'demo' }];
+  return mockIds.map((id) => ({ id }));
 }
 
 function fmt(d?: Date | null) {
@@ -85,6 +88,45 @@ export default async function JobDetailPage({ params }: { params: { id: string }
       description: 'Composing soundscapes, atmospheric audio, and cueing sound effects for a major theatre musical production.',
       skillsRequired: JSON.stringify(['Logic Pro', 'QLab 5', 'Spatial Audio']),
       company: { id: 'c3', companyName: 'Drama Circle Mumbai', description: 'Experimental and classical drama group.', website: 'https://dramacircle.in', location: 'Mumbai', logoUrl: null, userId: 'prod-demo-3' }
+    },
+    'demo-job-4': {
+      id: 'demo-job-4',
+      title: 'Live Sound Operator & FOH Engineer',
+      roleNeeded: 'SOUND_OPERATOR',
+      status: 'OPEN',
+      location: 'Andheri West, Mumbai',
+      startDate: new Date('2026-10-20'),
+      endDate: new Date('2026-11-05'),
+      budget: '₹3,800 / day',
+      description: 'Live audio mixing and QLab playback for musical theatre performance. Experience with Yamaha digital consoles required.',
+      skillsRequired: JSON.stringify(['Yamaha CL5', 'Sennheiser Wireless', 'FOH Mixing']),
+      company: { id: 'c4', companyName: 'The Wings Collective', description: 'Contemporary theatre production house.', website: 'https://wingscollective.in', location: 'Mumbai', logoUrl: null, userId: 'prod-demo-4' }
+    },
+    'demo-job-5': {
+      id: 'demo-job-5',
+      title: 'Stage Manager & Cue Caller',
+      roleNeeded: 'STAGE_MANAGER',
+      status: 'OPEN',
+      location: 'Bandra, Mumbai',
+      startDate: new Date('2026-10-25'),
+      endDate: new Date('2026-11-10'),
+      budget: '₹3,200 / day',
+      description: 'Calling lighting & sound cues, managing backstage props, actor transitions, and maintaining prompt book.',
+      skillsRequired: JSON.stringify(['Prompt Book', 'Cue Calling', 'Backstage Ops']),
+      company: { id: 'c5', companyName: 'Kala Studio', description: 'Experimental theatre studio in Bandra.', website: 'https://kalastudio.in', location: 'Mumbai', logoUrl: null, userId: 'prod-demo-5' }
+    },
+    'demo-job-6': {
+      id: 'demo-job-6',
+      title: 'Set & Prop Designer',
+      roleNeeded: 'SET_DESIGNER',
+      status: 'OPEN',
+      location: 'Dadar, Mumbai',
+      startDate: new Date('2026-11-01'),
+      endDate: new Date('2026-11-25'),
+      budget: '₹50,000 fixed',
+      description: 'Designing and supervising construction of realistic set pieces for black-box theatre.',
+      skillsRequired: JSON.stringify(['SketchUp', 'Prop Fabrication', 'Scenic Painting']),
+      company: { id: 'c6', companyName: 'Mumbai Theatre Group', description: 'Prominent theatre group in Central Mumbai.', website: 'https://mumbaitheatre.org', location: 'Mumbai', logoUrl: null, userId: 'prod-demo-6' }
     }
   };
 
