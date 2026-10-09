@@ -44,6 +44,69 @@ function JobCard({ job }: { job: any }) {
   );
 }
 
+const MOCK_JOBS = [
+  {
+    id: 'demo-job-1',
+    title: 'Senior Stage Lighting Technician',
+    roleNeeded: 'LIGHTING',
+    status: 'OPEN',
+    location: 'Prithvi Theatre, Juhu, Mumbai',
+    startDate: '2026-10-15',
+    endDate: '2026-10-30',
+    budget: '₹3,500 / day',
+    description: 'Seeking an experienced lighting tech for a 15-day production run of a contemporary Hindi play at Prithvi Theatre.',
+    company: { companyName: 'Prithvi Players', location: 'Mumbai' }
+  },
+  {
+    id: 'demo-job-2',
+    title: 'Live Sound Engineer & Operator',
+    roleNeeded: 'SOUND',
+    status: 'OPEN',
+    location: 'NCPA, Nariman Point, Mumbai',
+    startDate: '2026-11-01',
+    endDate: '2026-11-10',
+    budget: '₹4,000 / day',
+    description: 'Live audio mixing and QLab playback for musical theatre performance. Experience with Yamaha digital consoles required.',
+    company: { companyName: 'Royal Stage Productions', location: 'Mumbai' }
+  },
+  {
+    id: 'demo-job-3',
+    title: 'Assistant Stage Manager',
+    roleNeeded: 'STAGE_MANAGEMENT',
+    status: 'OPEN',
+    location: 'Royal Opera House, Mumbai',
+    startDate: '2026-10-20',
+    endDate: '2026-11-05',
+    budget: '₹2,800 / day',
+    description: 'Calling cues, managing backstage props, actor transitions, and maintaining prompt book.',
+    company: { companyName: 'Drama Circle Mumbai', location: 'Mumbai' }
+  },
+  {
+    id: 'demo-job-4',
+    title: 'Set & Prop Designer',
+    roleNeeded: 'SET_DESIGN',
+    status: 'OPEN',
+    location: 'Andheri West, Mumbai',
+    startDate: '2026-10-18',
+    endDate: '2026-11-12',
+    budget: '₹45,000 fixed',
+    description: 'Set construction and realistic prop design for experimental black-box drama show.',
+    company: { companyName: 'The Wings Collective', location: 'Mumbai' }
+  },
+  {
+    id: 'demo-job-5',
+    title: 'Costume & Wardrobe Supervisor',
+    roleNeeded: 'COSTUME',
+    status: 'OPEN',
+    location: 'Bandra, Mumbai',
+    startDate: '2026-10-25',
+    endDate: '2026-11-08',
+    budget: '₹3,000 / day',
+    description: 'Managing period costumes, quick wardrobe changes backstage, and garment maintenance.',
+    company: { companyName: 'Kala Studio', location: 'Mumbai' }
+  }
+];
+
 export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,13 +119,33 @@ export default function JobsPage() {
       const params = new URLSearchParams();
       if (role) params.set('role', role);
       if (location) params.set('location', location);
-      const res = await fetch(`/api/jobs?${params.toString()}`);
-      if (res.ok) {
+      const res = await fetch(`/api/jobs?${params.toString()}`).catch(() => null);
+      if (res && res.ok) {
         const data = await res.json();
-        setJobs(data.jobs ?? data.data ?? []);
+        const list = data.jobs ?? data.data ?? [];
+        if (list.length > 0) {
+          setJobs(list);
+          setLoading(false);
+          return;
+        }
       }
+      let filtered = MOCK_JOBS;
+      if (role) {
+        filtered = filtered.filter(j => j.roleNeeded === role);
+      }
+      if (location) {
+        filtered = filtered.filter(j => j.location.toLowerCase().includes(location.toLowerCase()));
+      }
+      setJobs(filtered);
     } catch {
-      /* keep state */
+      let filtered = MOCK_JOBS;
+      if (role) {
+        filtered = filtered.filter(j => j.roleNeeded === role);
+      }
+      if (location) {
+        filtered = filtered.filter(j => j.location.toLowerCase().includes(location.toLowerCase()));
+      }
+      setJobs(filtered);
     } finally {
       setLoading(false);
     }

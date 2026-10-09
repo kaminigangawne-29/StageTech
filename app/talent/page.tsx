@@ -69,6 +69,59 @@ function TechnicianCard({ tech }: { tech: any }) {
   );
 }
 
+const MOCK_TECHNICIANS = [
+  {
+    id: 'demo-tech-1',
+    fullName: 'Aarav Mehta',
+    name: 'Aarav Mehta',
+    primaryDiscipline: 'LIGHTING',
+    locationCity: 'Mumbai',
+    availabilityStatus: 'AVAILABLE',
+    skills: ['GrandMA3', 'QLab 5', 'Rigging', 'DMX Protocol'],
+    profileImageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop'
+  },
+  {
+    id: 'demo-tech-2',
+    fullName: 'Rhea Sharma',
+    name: 'Rhea Sharma',
+    primaryDiscipline: 'SOUND',
+    locationCity: 'Mumbai',
+    availabilityStatus: 'OPEN_TO_OFFERS',
+    skills: ['Yamaha CL5', 'Sennheiser Wireless', 'Logic Pro', 'FOH Mixing'],
+    profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop'
+  },
+  {
+    id: 'demo-tech-3',
+    fullName: 'Vikram Kulkarni',
+    name: 'Vikram Kulkarni',
+    primaryDiscipline: 'STAGE_MANAGEMENT',
+    locationCity: 'Mumbai',
+    availabilityStatus: 'AVAILABLE',
+    skills: ['Prompt Book', 'Cue Calling', 'Backstage Ops', 'Safety Protocols'],
+    profileImageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop'
+  },
+  {
+    id: 'demo-tech-4',
+    fullName: 'Ananya Roy',
+    name: 'Ananya Roy',
+    primaryDiscipline: 'SET_DESIGN',
+    locationCity: 'Mumbai',
+    availabilityStatus: 'AVAILABLE',
+    skills: ['SketchUp', '3D Drafting', 'Prop Fabrication', 'Scenic Painting'],
+    profileImageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop'
+  },
+  {
+    id: 'demo-tech-5',
+    fullName: 'Karan Joshi',
+    name: 'Karan Joshi',
+    primaryDiscipline: 'COSTUME',
+    locationCity: 'Mumbai',
+    availabilityStatus: 'BOOKED',
+    skills: ['Period Costumes', 'Tailoring', 'Drape Design', 'Quick Changes'],
+    profileImageUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=300&auto=format&fit=crop'
+  }
+];
+
 export default function TalentPage() {
   const [technicians, setTechnicians] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,15 +142,49 @@ export default function TalentPage() {
       if (skillSearch) params.set('skills', skillSearch);
       params.set('page', String(page));
       params.set('limit', '9');
-      const res = await fetch(`/api/talent?${params.toString()}`);
-      if (res.ok) {
+      const res = await fetch(`/api/talent?${params.toString()}`).catch(() => null);
+      if (res && res.ok) {
         const data = await res.json();
         const list = data.technicians ?? data.data ?? [];
-        setTechnicians(list);
-        setMeta(data.pagination ?? { page, totalPages: 1, total: list.length });
+        if (list.length > 0) {
+          setTechnicians(list);
+          setMeta(data.pagination ?? { page, totalPages: 1, total: list.length });
+          setLoading(false);
+          return;
+        }
       }
+
+      let filtered = MOCK_TECHNICIANS;
+      if (discipline) {
+        filtered = filtered.filter(t => t.primaryDiscipline === discipline);
+      }
+      if (location) {
+        filtered = filtered.filter(t => t.locationCity.toLowerCase().includes(location.toLowerCase()));
+      }
+      if (availability) {
+        filtered = filtered.filter(t => t.availabilityStatus === availability);
+      }
+      if (skillSearch) {
+        filtered = filtered.filter(t => t.skills.some(s => s.toLowerCase().includes(skillSearch.toLowerCase())));
+      }
+      setTechnicians(filtered);
+      setMeta({ page: 1, totalPages: 1, total: filtered.length });
     } catch {
-      /* keep state */
+      let filtered = MOCK_TECHNICIANS;
+      if (discipline) {
+        filtered = filtered.filter(t => t.primaryDiscipline === discipline);
+      }
+      if (location) {
+        filtered = filtered.filter(t => t.locationCity.toLowerCase().includes(location.toLowerCase()));
+      }
+      if (availability) {
+        filtered = filtered.filter(t => t.availabilityStatus === availability);
+      }
+      if (skillSearch) {
+        filtered = filtered.filter(t => t.skills.some(s => s.toLowerCase().includes(skillSearch.toLowerCase())));
+      }
+      setTechnicians(filtered);
+      setMeta({ page: 1, totalPages: 1, total: filtered.length });
     } finally {
       setLoading(false);
     }
