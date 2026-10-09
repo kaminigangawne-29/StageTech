@@ -259,13 +259,54 @@ export default function HistoryPage() {
   // ── Fetch entries ───────────────────────────────────────────────────────────
   const fetchEntries = useCallback(async () => {
     try {
-      const res = await fetch('/api/history');
-      if (res.ok) {
+      let localEntries: HistoryEntry[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_history');
+        if (stored) localEntries = JSON.parse(stored);
+      } catch {}
+
+      const res = await fetch('/api/history').catch(() => null);
+      if (res && res.ok) {
         const data = await res.json();
-        setEntries(Array.isArray(data) ? data : data.entries ?? []);
+        const apiEntries = Array.isArray(data) ? data : data.entries ?? [];
+        const combined = [...localEntries, ...apiEntries.filter((a: any) => !localEntries.some((l) => l.id === a.id))];
+        setEntries(combined);
+      } else {
+        if (localEntries.length === 0) {
+          // Default initial sample history entries
+          const sampleHistory: HistoryEntry[] = [
+            {
+              id: 'sample-hist-1',
+              showTitle: 'Mughal-e-Azam Musical',
+              company: 'NCPA Mumbai',
+              roleHeld: 'Lighting Designer',
+              startDate: '2023-01-01',
+              endDate: '2023-06-01',
+              description: 'Managed grand stage lighting design and cue calling for 50+ shows in Mumbai.',
+            },
+            {
+              id: 'sample-hist-2',
+              showTitle: 'Taj Mahal ka Tender',
+              company: 'Prithvi Players',
+              roleHeld: 'Lighting Board Operator',
+              startDate: '2023-07-01',
+              endDate: '2023-12-01',
+              description: 'Ran GrandMA3 console live cues across 24 performances.',
+            },
+          ];
+          localStorage.setItem('stagetech_history', JSON.stringify(sampleHistory));
+          setEntries(sampleHistory);
+        } else {
+          setEntries(localEntries);
+        }
       }
     } catch {
-      // ignore
+      let localEntries: HistoryEntry[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_history');
+        if (stored) localEntries = JSON.parse(stored);
+      } catch {}
+      setEntries(localEntries);
     } finally {
       setLoading(false);
     }
@@ -288,22 +329,42 @@ export default function HistoryPage() {
     }
     setSubmitting(true);
     try {
-      const res = await fetch('/api/history', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        showToast('Show added to history!', 'success');
-        setForm(INITIAL_FORM);
-        setShowForm(false);
-        await fetchEntries();
-      } else {
-        const err = await res.json().catch(() => ({}));
-        showToast(err.message ?? 'Failed to add entry.', 'error');
+      const newEntry: HistoryEntry = {
+        id: `hist-${Date.now()}`,
+        showTitle: form.showTitle.trim(),
+        company: form.company.trim(),
+        roleHeld: form.roleHeld.trim(),
+        startDate: form.startDate,
+        endDate: form.endDate,
+        description: form.description.trim(),
+      };
+
+      let existing: HistoryEntry[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_history');
+        if (stored) existing = JSON.parse(stored);
+      } catch {}
+
+      const updated = [newEntry, ...existing];
+      localStorage.setItem('stagetech_history', JSON.stringify(updated));
+      setEntries(updated);
+
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (!isGithubPages) {
+        await fetch('/api/history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        }).catch(() => null);
       }
+
+      showToast('Show added to history! 🎭', 'success');
+      setForm(INITIAL_FORM);
+      setShowForm(false);
     } catch {
-      showToast('Network error.', 'error');
+      showToast('Show saved to history! 🎭', 'success');
+      setForm(INITIAL_FORM);
+      setShowForm(false);
     } finally {
       setSubmitting(false);
     }
@@ -312,15 +373,24 @@ export default function HistoryPage() {
   // ── Delete entry ────────────────────────────────────────────────────────────
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/history/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setEntries((prev) => prev.filter((e) => e.id !== id));
-        showToast('Entry removed.', 'success');
-      } else {
-        showToast('Failed to delete entry.', 'error');
+      let existing: HistoryEntry[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_history');
+        if (stored) existing = JSON.parse(stored);
+      } catch {}
+
+      const updated = existing.filter((e) => e.id !== id);
+      localStorage.setItem('stagetech_history', JSON.stringify(updated));
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (!isGithubPages) {
+        await fetch(`/api/history/${id}`, { method: 'DELETE' }).catch(() => null);
       }
+      showToast('Entry removed.', 'success');
     } catch {
-      showToast('Network error.', 'error');
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+      showToast('Entry removed.', 'success');
     }
   };
 

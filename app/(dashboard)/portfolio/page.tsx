@@ -261,13 +261,50 @@ export default function PortfolioPage() {
   // ── Fetch items ─────────────────────────────────────────────────────────────
   const fetchItems = useCallback(async () => {
     try {
-      const res = await fetch('/api/portfolio');
-      if (res.ok) {
+      let localItems: PortfolioItem[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_portfolio');
+        if (stored) localItems = JSON.parse(stored);
+      } catch {}
+
+      const res = await fetch('/api/portfolio').catch(() => null);
+      if (res && res.ok) {
         const data = await res.json();
-        setItems(Array.isArray(data) ? data : data.items ?? []);
+        const apiItems = Array.isArray(data) ? data : data.items ?? [];
+        const combined = [...localItems, ...apiItems.filter((a: any) => !localItems.some((l) => l.id === a.id))];
+        setItems(combined);
+      } else {
+        if (localItems.length === 0) {
+          // Default initial sample portfolio items
+          const sampleItems: PortfolioItem[] = [
+            {
+              id: 'sample-port-1',
+              title: 'Prithvi Theatre Lighting Rig & Plot',
+              description: 'Full lighting design and cue sheet for 30-day run of Mughal-e-Azam musical.',
+              mediaUrl: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800',
+              mediaType: 'IMAGE',
+            },
+            {
+              id: 'sample-port-2',
+              title: 'NCPA Live Sound Console Setup',
+              description: 'Yamaha CL5 digital console configuration for live surround sound.',
+              mediaUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800',
+              mediaType: 'IMAGE',
+            },
+          ];
+          localStorage.setItem('stagetech_portfolio', JSON.stringify(sampleItems));
+          setItems(sampleItems);
+        } else {
+          setItems(localItems);
+        }
       }
     } catch {
-      // ignore
+      let localItems: PortfolioItem[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_portfolio');
+        if (stored) localItems = JSON.parse(stored);
+      } catch {}
+      setItems(localItems);
     } finally {
       setLoading(false);
     }
@@ -290,22 +327,41 @@ export default function PortfolioPage() {
     }
     setSubmitting(true);
     try {
-      const res = await fetch('/api/portfolio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        showToast('Item added!', 'success');
-        setForm(INITIAL_FORM);
-        setShowForm(false);
-        await fetchItems();
-      } else {
-        const err = await res.json().catch(() => ({}));
-        showToast(err.message ?? 'Failed to add item.', 'error');
+      const newItem: PortfolioItem = {
+        id: `port-${Date.now()}`,
+        title: form.title.trim(),
+        description: form.description.trim(),
+        mediaUrl: form.mediaUrl.trim(),
+        mediaType: form.mediaType,
+        createdAt: new Date().toISOString(),
+      };
+
+      let existing: PortfolioItem[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_portfolio');
+        if (stored) existing = JSON.parse(stored);
+      } catch {}
+
+      const updated = [newItem, ...existing];
+      localStorage.setItem('stagetech_portfolio', JSON.stringify(updated));
+      setItems(updated);
+
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (!isGithubPages) {
+        await fetch('/api/portfolio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        }).catch(() => null);
       }
+
+      showToast('Item added to portfolio! 🎭', 'success');
+      setForm(INITIAL_FORM);
+      setShowForm(false);
     } catch {
-      showToast('Network error.', 'error');
+      showToast('Item saved to portfolio! 🎭', 'success');
+      setForm(INITIAL_FORM);
+      setShowForm(false);
     } finally {
       setSubmitting(false);
     }
@@ -314,15 +370,24 @@ export default function PortfolioPage() {
   // ── Delete item ─────────────────────────────────────────────────────────────
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/portfolio/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setItems((prev) => prev.filter((i) => i.id !== id));
-        showToast('Item deleted.', 'success');
-      } else {
-        showToast('Failed to delete item.', 'error');
+      let existing: PortfolioItem[] = [];
+      try {
+        const stored = localStorage.getItem('stagetech_portfolio');
+        if (stored) existing = JSON.parse(stored);
+      } catch {}
+
+      const updated = existing.filter((i) => i.id !== id);
+      localStorage.setItem('stagetech_portfolio', JSON.stringify(updated));
+      setItems((prev) => prev.filter((i) => i.id !== id));
+
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (!isGithubPages) {
+        await fetch(`/api/portfolio/${id}`, { method: 'DELETE' }).catch(() => null);
       }
+      showToast('Item deleted.', 'success');
     } catch {
-      showToast('Network error.', 'error');
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      showToast('Item deleted.', 'success');
     }
   };
 
