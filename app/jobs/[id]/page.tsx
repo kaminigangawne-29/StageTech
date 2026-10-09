@@ -9,10 +9,13 @@ export const dynamic = 'auto';
 export async function generateStaticParams() {
   try {
     const jobs = await prisma.jobPosting.findMany({ select: { id: true } });
-    return jobs.map((j) => ({ id: j.id }));
+    if (jobs && jobs.length > 0) {
+      return jobs.map((j) => ({ id: j.id }));
+    }
   } catch {
-    return [];
+    // fallback for static export without DB
   }
+  return [{ id: 'demo' }];
 }
 
 function fmt(d?: Date | null) {

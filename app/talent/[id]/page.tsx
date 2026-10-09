@@ -9,10 +9,13 @@ export const dynamic = 'auto';
 export async function generateStaticParams() {
   try {
     const profiles = await prisma.technicianProfile.findMany({ select: { id: true } });
-    return profiles.map((p) => ({ id: p.id }));
+    if (profiles && profiles.length > 0) {
+      return profiles.map((p) => ({ id: p.id }));
+    }
   } catch {
-    return [];
+    // fallback for static export without DB
   }
+  return [{ id: 'demo' }];
 }
 
 const AVAIL: Record<string, { bg: string; label: string }> = {
