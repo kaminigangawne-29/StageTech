@@ -27,18 +27,41 @@ function LoginForm() {
     try {
       const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
       if (isGithubPages) {
-        const isProd = email.toLowerCase().includes('producer');
+        const cleanEmail = email.trim().toLowerCase();
+        let existingUsers: Array<{ name: string; email: string; role: string }> = [];
+        try {
+          const u = localStorage.getItem('stagetech_users');
+          if (u) existingUsers = JSON.parse(u);
+        } catch {}
+
+        const found = existingUsers.find((user) => user.email.toLowerCase() === cleanEmail);
+
+        let userRole = 'TECHNICIAN';
+        let userName = cleanEmail.split('@')[0] || 'User';
+        userName = userName.charAt(0).toUpperCase() + userName.slice(1);
+
+        if (found) {
+          userRole = found.role;
+          userName = found.name;
+        } else {
+          const isProd = cleanEmail.includes('producer') || cleanEmail.includes('company');
+          userRole = isProd ? 'PRODUCTION' : 'TECHNICIAN';
+          if (cleanEmail === 'aarav.lighting@example.com') userName = 'Aarav Mehta';
+          if (cleanEmail === 'producer@prithviplayers.in') userName = 'Prithvi Players';
+        }
+
         const mockUser = {
-          id: isProd ? 'prod-demo' : 'tech-demo',
-          name: isProd ? 'Prithvi Players' : (email.split('@')[0] || 'Aarav Sharma'),
-          email: email.trim().toLowerCase(),
-          role: isProd ? 'PRODUCTION' : 'TECHNICIAN',
+          id: `user-${Date.now()}`,
+          name: userName,
+          email: cleanEmail,
+          role: userRole,
         };
         const mockSession = {
           user: mockUser,
           expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         };
         localStorage.setItem('stagetech_session', JSON.stringify(mockSession));
+        window.dispatchEvent(new Event('stagetech_session_updated'));
         window.location.href = '/StageTech/dashboard';
         return;
       }

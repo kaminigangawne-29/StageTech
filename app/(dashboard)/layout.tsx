@@ -211,6 +211,7 @@ function Sidebar({
           onClick={() => {
             if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
               localStorage.removeItem('stagetech_session');
+              window.dispatchEvent(new Event('stagetech_session_updated'));
               window.location.href = '/StageTech/login';
               return;
             }

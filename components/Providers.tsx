@@ -7,14 +7,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('stagetech_session');
-      if (saved) {
-        try {
-          setSession(JSON.parse(saved));
-        } catch {
-          // ignore
+      const loadSession = () => {
+        const saved = localStorage.getItem('stagetech_session');
+        if (saved) {
+          try {
+            setSession(JSON.parse(saved));
+          } catch {
+            setSession(null);
+          }
+        } else {
+          setSession(null);
         }
-      }
+      };
+      loadSession();
+      window.addEventListener('stagetech_session_updated', loadSession);
+      window.addEventListener('storage', loadSession);
+      return () => {
+        window.removeEventListener('stagetech_session_updated', loadSession);
+        window.removeEventListener('storage', loadSession);
+      };
     }
   }, []);
 

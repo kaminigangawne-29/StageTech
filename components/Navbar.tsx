@@ -1,12 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
 export function Navbar() {
   const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [staticSession, setStaticSession] = useState<any>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+      const getSession = () => {
+        try {
+          const s = localStorage.getItem('stagetech_session');
+          setStaticSession(s ? JSON.parse(s) : null);
+        } catch {
+          setStaticSession(null);
+        }
+      };
+      getSession();
+      window.addEventListener('stagetech_session_updated', getSession);
+      window.addEventListener('storage', getSession);
+      return () => {
+        window.removeEventListener('stagetech_session_updated', getSession);
+        window.removeEventListener('storage', getSession);
+      };
+    }
+  }, []);
+
+  const currentSession = session || staticSession;
 
   const navLinks = [
     { label: 'Home', href: '/' },
@@ -42,9 +65,9 @@ export function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              {status === 'loading' ? (
+              {status === 'loading' && !staticSession ? (
                 <div className="w-24 h-9 bg-white border-2 border-black animate-pulse" />
-              ) : session ? (
+              ) : currentSession ? (
                 <>
                   <Link href="/dashboard" className="nb-btn nb-btn-white !py-1.5 !px-4 !text-sm">
                     Dashboard
@@ -53,6 +76,7 @@ export function Navbar() {
                     onClick={() => {
                       if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
                         localStorage.removeItem('stagetech_session');
+                        window.dispatchEvent(new Event('stagetech_session_updated'));
                         window.location.href = '/StageTech';
                         return;
                       }
@@ -100,7 +124,7 @@ export function Navbar() {
               </Link>
             ))}
             <div className="border-t-2 border-black pt-3 flex flex-col gap-3">
-              {session ? (
+              {currentSession ? (
                 <>
                   <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="nb-btn nb-btn-white">
                     Dashboard
@@ -110,6 +134,7 @@ export function Navbar() {
                       setMobileOpen(false);
                       if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
                         localStorage.removeItem('stagetech_session');
+                        window.dispatchEvent(new Event('stagetech_session_updated'));
                         window.location.href = '/StageTech';
                         return;
                       }

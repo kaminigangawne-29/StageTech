@@ -53,17 +53,39 @@ function SignupForm() {
     try {
       const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
       if (isGithubPages) {
-        const mockUser = {
+        const cleanEmail = email.trim().toLowerCase();
+        const newUser = {
           name: name.trim(),
-          email: email.trim().toLowerCase(),
+          email: cleanEmail,
           role: role,
         };
+
+        let existingUsers: Array<{ name: string; email: string; role: string }> = [];
+        try {
+          const u = localStorage.getItem('stagetech_users');
+          if (u) existingUsers = JSON.parse(u);
+        } catch {}
+
+        const index = existingUsers.findIndex(u => u.email.toLowerCase() === cleanEmail);
+        if (index >= 0) {
+          existingUsers[index] = newUser;
+        } else {
+          existingUsers.push(newUser);
+        }
+        localStorage.setItem('stagetech_users', JSON.stringify(existingUsers));
+
         const mockSession = {
-          user: mockUser,
+          user: {
+            id: `user-${Date.now()}`,
+            name: name.trim(),
+            email: cleanEmail,
+            role: role,
+          },
           expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         };
         localStorage.setItem('stagetech_session', JSON.stringify(mockSession));
-        window.location.href = '/StageTech/login?registered=true';
+        window.dispatchEvent(new Event('stagetech_session_updated'));
+        window.location.href = '/StageTech/dashboard';
         return;
       }
 
