@@ -4,7 +4,16 @@ import { prisma } from '@/lib/prisma';
 import { disciplineLabel, disciplineColor } from '@/lib/disciplines';
 import ApplyForm from '@/components/ApplyForm';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'auto';
+
+export async function generateStaticParams() {
+  try {
+    const jobs = await prisma.jobPosting.findMany({ select: { id: true } });
+    return jobs.map((j) => ({ id: j.id }));
+  } catch {
+    return [];
+  }
+}
 
 function fmt(d?: Date | null) {
   if (!d) return '';

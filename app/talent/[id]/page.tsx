@@ -4,7 +4,16 @@ import { prisma } from '@/lib/prisma';
 import { disciplineLabel, disciplineColor } from '@/lib/disciplines';
 import InquiryButton from '@/components/InquiryButton';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'auto';
+
+export async function generateStaticParams() {
+  try {
+    const profiles = await prisma.technicianProfile.findMany({ select: { id: true } });
+    return profiles.map((p) => ({ id: p.id }));
+  } catch {
+    return [];
+  }
+}
 
 const AVAIL: Record<string, { bg: string; label: string }> = {
   AVAILABLE: { bg: '#7AE582', label: 'Available' },

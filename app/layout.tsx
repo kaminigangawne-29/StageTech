@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import './compiled.css';
 import { Navbar } from '@/components/Navbar';
 import { Providers } from '@/components/Providers';
 
