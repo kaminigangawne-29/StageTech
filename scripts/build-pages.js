@@ -19,9 +19,10 @@ try {
     moved = true;
   }
 
-  console.log('Generating Prisma client...');
+  console.log('Generating Prisma client and setting up database schema...');
   try {
     execSync('npx prisma generate', { stdio: 'inherit', env: process.env });
+    execSync('npx prisma db push --skip-generate', { stdio: 'inherit', env: process.env });
   } catch (e) {
     console.warn('Prisma warning:', e.message);
   }
