@@ -50,7 +50,14 @@ export function Navbar() {
                     Dashboard
                   </Link>
                   <button
-                    onClick={() => signOut({ callbackUrl: '/' })}
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+                        localStorage.removeItem('stagetech_session');
+                        window.location.href = '/StageTech';
+                        return;
+                      }
+                      signOut({ callbackUrl: '/' });
+                    }}
                     className="nb-btn nb-btn-red !py-1.5 !px-4 !text-sm"
                   >
                     Sign Out
@@ -101,6 +108,11 @@ export function Navbar() {
                   <button
                     onClick={() => {
                       setMobileOpen(false);
+                      if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+                        localStorage.removeItem('stagetech_session');
+                        window.location.href = '/StageTech';
+                        return;
+                      }
                       signOut({ callbackUrl: '/' });
                     }}
                     className="nb-btn nb-btn-red"

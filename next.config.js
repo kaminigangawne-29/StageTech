@@ -4,7 +4,6 @@ const isGithubPages = process.env.NEXT_PUBLIC_GITHUB_PAGES === 'true';
 const nextConfig = {
   ...(isGithubPages && {
     output: 'export',
-    distDir: 'out',
     basePath: '/StageTech',
     assetPrefix: '/StageTech',
     images: {

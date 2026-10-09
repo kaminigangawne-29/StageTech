@@ -208,7 +208,14 @@ function Sidebar({
         </div>
 
         <button
-          onClick={() => signOut({ callbackUrl: '/login' })}
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+              localStorage.removeItem('stagetech_session');
+              window.location.href = '/StageTech/login';
+              return;
+            }
+            signOut({ callbackUrl: '/login' });
+          }}
           style={{
             background: 'rgba(208,0,0,0.1)',
             border: '1px solid rgba(208,0,0,0.25)',
@@ -230,22 +237,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
 
+  const staticSession = typeof window !== 'undefined' && window.location.hostname.includes('github.io')
+    ? (() => {
+        try {
+          const s = localStorage.getItem('stagetech_session');
+          return s ? JSON.parse(s) : null;
+        } catch {
+          return null;
+        }
+      })()
+    : null;
+
+  const currentSession = session || staticSession;
+
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+      const saved = localStorage.getItem('stagetech_session');
+      if (saved) return;
+    }
+    if (status === 'unauthenticated' && !staticSession) {
       router.replace('/login');
     }
-  }, [status, router]);
+  }, [status, router, staticSession]);
 
-  if (status === 'loading') {
+  if (status === 'loading' && !staticSession) {
     return <FullScreenSpinner />;
   }
 
-  if (!session) {
+  if (!currentSession) {
     return null;
   }
 
-  const role = (session.user as { role?: string })?.role ?? 'TECHNICIAN';
-  const userName = session.user?.name ?? session.user?.email ?? 'User';
+  const role = (currentSession.user as { role?: string })?.role ?? 'TECHNICIAN';
+  const userName = currentSession.user?.name ?? currentSession.user?.email ?? 'User';
   const navLinks = role === 'PRODUCTION' ? PRODUCTION_LINKS : TECHNICIAN_LINKS;
 
   return (

@@ -6,7 +6,6 @@ const appDir = path.join(__dirname, '../app');
 const apiPath = path.join(appDir, 'api');
 const tempApiPath = path.join(appDir, '_api');
 
-// Set fallback environment variables for static export
 process.env.DATABASE_URL = process.env.DATABASE_URL || 'file:./dev.db';
 process.env.NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || 'stagetech-secret-key-32chars-github-pages';
 process.env.NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'https://kaminigangawne-29.github.io/StageTech';
@@ -20,13 +19,11 @@ try {
     moved = true;
   }
 
-  console.log('Generating Prisma client and database...');
+  console.log('Generating Prisma client...');
   try {
     execSync('npx prisma generate', { stdio: 'inherit', env: process.env });
-    execSync('npx prisma db push --skip-generate', { stdio: 'inherit', env: process.env });
-    execSync('npm run db:seed', { stdio: 'inherit', env: process.env });
-  } catch (dbErr) {
-    console.warn('Prisma setup warning (proceeding with fallback data):', dbErr.message);
+  } catch (e) {
+    console.warn('Prisma warning:', e.message);
   }
 
   console.log('Running Next.js static export build...');

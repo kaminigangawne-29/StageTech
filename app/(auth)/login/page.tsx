@@ -25,6 +25,24 @@ function LoginForm() {
     }
     setLoading(true);
     try {
+      const isGithubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+      if (isGithubPages) {
+        const isProd = email.toLowerCase().includes('producer');
+        const mockUser = {
+          id: isProd ? 'prod-demo' : 'tech-demo',
+          name: isProd ? 'Prithvi Players' : (email.split('@')[0] || 'Aarav Sharma'),
+          email: email.trim().toLowerCase(),
+          role: isProd ? 'PRODUCTION' : 'TECHNICIAN',
+        };
+        const mockSession = {
+          user: mockUser,
+          expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        };
+        localStorage.setItem('stagetech_session', JSON.stringify(mockSession));
+        window.location.href = '/StageTech/dashboard';
+        return;
+      }
+
       const result = await signIn('credentials', {
         email: email.trim().toLowerCase(),
         password,
